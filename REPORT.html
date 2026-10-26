@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment #5 — Strategy Pattern Report</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 11mm 13mm 11mm 13mm;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #24292f;
+            line-height: 1.45;
+            font-size: 9.8pt;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            font-size: 17pt;
+            border-bottom: 2px solid #0969da;
+            padding-bottom: 4px;
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #1f2328;
+        }
+        h2 {
+            font-size: 12pt;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 3px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            color: #0969da;
+            page-break-after: avoid;
+        }
+        h3 {
+            font-size: 10.2pt;
+            margin-top: 8px;
+            margin-bottom: 3px;
+            color: #24292f;
+            page-break-after: avoid;
+        }
+        p, ul, ol {
+            margin-top: 3px;
+            margin-bottom: 5px;
+        }
+        li {
+            margin-bottom: 2px;
+        }
+        .meta-box {
+            background-color: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            padding: 6px 12px;
+            margin-bottom: 10px;
+            font-size: 9.2pt;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px;
+        }
+        .meta-item strong {
+            color: #1f2328;
+        }
+        code {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            background-color: rgba(175, 184, 193, 0.2);
+            padding: 0.1em 0.3em;
+            border-radius: 3px;
+            font-size: 8.8pt;
+        }
+        pre {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+            background-color: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 5px;
+            padding: 6px 8px;
+            font-size: 8.2pt;
+            overflow-x: auto;
+            margin: 4px 0;
+            line-height: 1.35;
+            page-break-inside: avoid;
+        }
+        .diagram-container {
+            text-align: center;
+            margin: 6px 0;
+            page-break-inside: avoid;
+        }
+        .principle-box {
+            margin-bottom: 6px;
+            page-break-inside: avoid;
+        }
+        .repo-link {
+            font-size: 10pt;
+            font-weight: 600;
+            color: #0969da;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Assignment #5 — Strategy Pattern Report</h1>
+
+    <div class="meta-box">
+        <div class="meta-item"><strong>Course:</strong> ShP-2216 – Software Design Patterns</div>
+        <div class="meta-item"><strong>Academic Year:</strong> 2026–2027 (2nd year, 4th trimester)</div>
+        <div class="meta-item"><strong>Institution:</strong> Astana IT University – School of SE</div>
+        <div class="meta-item"><strong>Student:</strong> Dias</div>
+        <div class="meta-item" style="grid-column: span 2;"><strong>GitHub Repository:</strong> <a href="https://github.com/HumbleCherry10/SDP-5" class="repo-link">https://github.com/HumbleCherry10/SDP-5</a></div>
+    </div>
+
+    <h2>1. Introduction</h2>
+    <p>
+        For this assignment, <strong>Option A — Navigation / Route Planning</strong> was selected. In modern geospatial navigation systems (e.g., Google Maps, 2GIS), users calculate journeys between origins and destinations across radically different modal constraints:
+    </p>
+    <ul>
+        <li><strong>Car / Driving:</strong> Optimizes for highways and arterial bypasses, factors in road traffic congestion, and estimates fuel and toll expenses.</li>
+        <li><strong>Walking / Pedestrian:</strong> Routes through sidewalks, urban parks, footbridges, and pedestrian-only zones while strictly avoiding vehicular highways. Incurs zero financial cost.</li>
+        <li><strong>Bicycle / Cycling:</strong> Prioritizes dedicated cycling paths, greenways, and minimal slope gradients for commuter safety and stamina.</li>
+        <li><strong>Public Transit:</strong> Coordinates multi-modal connections (metro, buses), fixed schedule stops, transfers, and flat tariff ticketing.</li>
+    </ul>
+    <p>
+        The <strong>Strategy Design Pattern</strong> solves this problem by encapsulating each distinct route-planning algorithm behind a common interface (<code>RouteStrategy</code>). A lightweight context (<code>Navigator</code>) maintains a reference to the active strategy and delegates execution directly to it, granting the client dynamic runtime strategy switching without coupling or complex conditionals.
+    </p>
+
+    <h2>2. UML Class Diagram</h2>
+    <div class="diagram-container">
+        <svg width="670" height="240" viewBox="0 0 670 240" xmlns="http://www.w3.org/2000/svg" style="font-family: Segoe UI, Arial, sans-serif; font-size: 10.5px;">
+            <!-- Context: Navigator -->
+            <rect x="20" y="15" width="170" height="90" rx="5" fill="#f0f7ff" stroke="#0969da" stroke-width="1.5"/>
+            <text x="105" y="33" text-anchor="middle" font-weight="bold" fill="#0969da">Navigator (Context)</text>
+            <line x1="20" y1="40" x2="190" y2="40" stroke="#0969da" stroke-width="1"/>
+            <text x="26" y="54" fill="#333">- routeStrategy: RouteStrategy</text>
+            <line x1="20" y1="61" x2="190" y2="61" stroke="#0969da" stroke-width="1"/>
+            <text x="26" y="75" fill="#333">+ setStrategy(s: RouteStrategy)</text>
+            <text x="26" y="90" fill="#333">+ planRoute(orig, dest): RoutePlan</text>
+
+            <!-- Arrow Navigator -> RouteStrategy -->
+            <line x1="190" y1="60" x2="268" y2="60" stroke="#555" stroke-width="1.5"/>
+            <polygon points="268,60 258,55 258,65" fill="#555"/>
+            <text x="228" y="52" text-anchor="middle" font-size="9.5" fill="#666">delegates</text>
+
+            <!-- Strategy Interface -->
+            <rect x="270" y="15" width="200" height="82" rx="5" fill="#fdf4ff" stroke="#a855f7" stroke-width="1.5"/>
+            <text x="370" y="31" text-anchor="middle" font-style="italic" fill="#7e22ce">&lt;&lt;interface&gt;&gt;</text>
+            <text x="370" y="46" text-anchor="middle" font-weight="bold" fill="#7e22ce">RouteStrategy</text>
+            <line x1="270" y1="52" x2="470" y2="52" stroke="#a855f7" stroke-width="1"/>
+            <text x="278" y="68" fill="#333">+ buildRoute(orig, dest): RoutePlan</text>
+            <text x="278" y="84" fill="#333">+ getModeName(): String</text>
+
+            <!-- Model: RoutePlan -->
+            <rect x="510" y="15" width="145" height="90" rx="5" fill="#f6f8fa" stroke="#656d76" stroke-width="1.5"/>
+            <text x="582" y="33" text-anchor="middle" font-weight="bold" fill="#24292f">RoutePlan</text>
+            <line x1="510" y1="40" x2="655" y2="40" stroke="#656d76" stroke-width="1"/>
+            <text x="516" y="54" fill="#555">- distanceKm: double</text>
+            <text x="516" y="67" fill="#555">- durationMinutes: int</text>
+            <text x="516" y="80" fill="#555">- estimatedCost: double</text>
+            <text x="516" y="93" fill="#555">- routeDetails: String</text>
+
+            <line x1="470" y1="56" x2="508" y2="56" stroke="#888" stroke-width="1" stroke-dasharray="3,3"/>
+            <polygon points="508,56 500,52 500,60" fill="#888"/>
+
+            <!-- Connecting bus line -->
+            <line x1="370" y1="97" x2="370" y2="124" stroke="#7e22ce" stroke-width="1.2"/>
+            <line x1="85" y1="124" x2="575" y2="124" stroke="#7e22ce" stroke-width="1.2"/>
+
+            <!-- Concrete Strategy 1: Car -->
+            <line x1="85" y1="124" x2="85" y2="142" stroke="#7e22ce" stroke-width="1.2"/>
+            <polygon points="85,142 80,134 90,134" fill="#fff" stroke="#7e22ce" stroke-width="1.2"/>
+            <rect x="15" y="142" width="140" height="66" rx="4" fill="#fff" stroke="#0969da" stroke-width="1.2"/>
+            <text x="85" y="159" text-anchor="middle" font-weight="bold" fill="#0969da">CarRouteStrategy</text>
+            <line x1="15" y1="166" x2="155" y2="166" stroke="#d0d7de" stroke-width="1"/>
+            <text x="21" y="181" font-size="9" fill="#333">+ buildRoute(...)</text>
+            <text x="21" y="196" font-size="9" fill="#333">+ getModeName()</text>
+
+            <!-- Concrete Strategy 2: Walking -->
+            <line x1="248" y1="124" x2="248" y2="142" stroke="#7e22ce" stroke-width="1.2"/>
+            <polygon points="248,142 243,134 253,134" fill="#fff" stroke="#7e22ce" stroke-width="1.2"/>
+            <rect x="178" y="142" width="140" height="66" rx="4" fill="#fff" stroke="#0969da" stroke-width="1.2"/>
+            <text x="248" y="159" text-anchor="middle" font-weight="bold" fill="#0969da">WalkingRouteStrategy</text>
+            <line x1="178" y1="166" x2="318" y2="166" stroke="#d0d7de" stroke-width="1"/>
+            <text x="184" y="181" font-size="9" fill="#333">+ buildRoute(...)</text>
+            <text x="184" y="196" font-size="9" fill="#333">+ getModeName()</text>
+
+            <!-- Concrete Strategy 3: Cycling -->
+            <line x1="412" y1="124" x2="412" y2="142" stroke="#7e22ce" stroke-width="1.2"/>
+            <polygon points="412,142 407,134 417,134" fill="#fff" stroke="#7e22ce" stroke-width="1.2"/>
+            <rect x="342" y="142" width="140" height="66" rx="4" fill="#fff" stroke="#0969da" stroke-width="1.2"/>
+            <text x="412" y="159" text-anchor="middle" font-weight="bold" fill="#0969da">CyclingRouteStrategy</text>
+            <line x1="342" y1="166" x2="482" y2="166" stroke="#d0d7de" stroke-width="1"/>
+            <text x="348" y="181" font-size="9" fill="#333">+ buildRoute(...)</text>
+            <text x="348" y="196" font-size="9" fill="#333">+ getModeName()</text>
+
+            <!-- Concrete Strategy 4: Public Transit -->
+            <line x1="575" y1="124" x2="575" y2="142" stroke="#7e22ce" stroke-width="1.2"/>
+            <polygon points="575,142 570,134 580,134" fill="#fff" stroke="#7e22ce" stroke-width="1.2"/>
+            <rect x="505" y="142" width="150" height="66" rx="4" fill="#fff" stroke="#1a7f37" stroke-width="1.2"/>
+            <text x="580" y="159" text-anchor="middle" font-weight="bold" fill="#1a7f37">PublicTransitStrategy</text>
+            <line x1="505" y1="166" x2="655" y2="166" stroke="#d0d7de" stroke-width="1"/>
+            <text x="511" y="181" font-size="9" fill="#333">+ buildRoute(...)</text>
+            <text x="511" y="196" font-size="9" fill="#333">+ getModeName()</text>
+        </svg>
+    </div>
+
+    <h2>3. Clean Code Section</h2>
+    <p>The solution strictly adheres to Clean Code standards (Robert C. Martin, Ch. 10):</p>
+
+    <div class="principle-box">
+        <h3>1. Elimination of Conditional Logic in Favor of Polymorphism</h3>
+        <p>Instead of hardcoding brittle <code>if-else</code> or <code>switch</code> cascades in <code>Navigator</code>, algorithms are dispatched polymorphically at runtime via the <code>RouteStrategy</code> interface.</p>
+        <pre>// BEFORE (Fragile branching antipattern):
+if (mode.equals("CAR")) { routeCar(...); }
+else if (mode.equals("WALK")) { routeWalk(...); }
+
+// AFTER (Clean polymorphic dispatch in Navigator.java):
+public RoutePlan planRoute(String origin, String destination) {
+    return routeStrategy.buildRoute(origin, destination); // 0 conditionals!
+}</pre>
+    </div>
+
+    <div class="principle-box">
+        <h3>2. Meaningful, Intention-Revealing Names</h3>
+        <p>Identifiers accurately communicate business intent (<code>CarRouteStrategy</code>, <code>WalkingRouteStrategy</code>, <code>buildRoute</code>, <code>RoutePlan</code>), eliminating guesswork and misleading naming.</p>
+        <pre>public interface RouteStrategy {
+    RoutePlan buildRoute(String origin, String destination);
+    String getModeName();
+}</pre>
+    </div>
+
+    <div class="principle-box">
+        <h3>3. Single Responsibility Principle (SRP)</h3>
+        <p>Each concrete strategy encapsulates only the rules, speeds, and calculations for its specific transit mode. <code>Navigator</code> is solely responsible for holding the reference and executing delegation.</p>
+    </div>
+
+    <div class="principle-box">
+        <h3>4. Context Remains Algorithm-Agnostic (Dependency Inversion)</h3>
+        <p><code>Navigator</code> depends purely on the abstract interface <code>RouteStrategy</code>. It possesses zero coupling to speeds, toll fees, highway maps, or pedestrian walking steps.</p>
+        <pre>public class Navigator {
+    private RouteStrategy routeStrategy;
+    public void setStrategy(RouteStrategy routeStrategy) {
+        this.routeStrategy = Objects.requireNonNull(routeStrategy, "Strategy cannot be null");
+    }
+}</pre>
+    </div>
+
+    <div class="principle-box">
+        <h3>5. Easy Extensibility (Open/Closed Principle)</h3>
+        <p>We demonstrated open extensibility by implementing <code>PublicTransitRouteStrategy</code> without modifying or recompiling <code>Navigator</code> or existing strategies.</p>
+    </div>
+
+    <h2>4. Strategy vs. State</h2>
+    <p>
+        While <strong>Strategy</strong> and <strong>State</strong> share identical structural class diagrams, their fundamental intent and lifecycle control are opposite:
+    </p>
+    <ul>
+        <li><strong>Client Control vs. Autonomous Internal Transitions:</strong> In the <em>Strategy Pattern</em>, the client externally selects and configures the algorithm suitable for its objective (e.g., user selects Driving vs. Walking). Individual strategies are unaware of one another. In contrast, the <em>State Pattern</em> manages an internal state lifecycle where transitions trigger automatically based on context state changes (e.g., Draft &rarr; Moderation &rarr; Published).</li>
+        <li><strong>Why Navigation Calls for Strategy:</strong> A navigation engine does not undergo internal life-cycle state changes; walking, driving, and cycling are purely interchangeable algorithms selected by the user to compute a path. Strategy is therefore the precise and correct pattern.</li>
+    </ul>
+
+    <h2>5. Conclusion</h2>
+    <p>
+        The Strategy pattern decoupled algorithm selection from route execution. The minor overhead of introducing interface and concrete strategy classes is vastly outweighed by the elimination of regressions, full adherence to SOLID principles, and frictionless extensibility.
+    </p>
+
+    <h2>6. Link to GitHub Repository</h2>
+    <p>
+        The complete compiling source code and Git commit history are available at:<br>
+        <a href="https://github.com/HumbleCherry10/SDP-5" class="repo-link">https://github.com/HumbleCherry10/SDP-5</a>
+    </p>
+
+</body>
+</html>
